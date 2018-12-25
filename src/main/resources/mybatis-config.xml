@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC 
+"-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<!-- 打印查询语句 -->
+		<setting name="logImpl" value="STDOUT_LOGGING" />
+	</settings>
+	
+	<typeAliases>
+		<typeAlias alias= 'UserModel' type = 'com.cjf.market.user.model.UserModel'/>
+		<typeAlias alias= 'CategoryModel' type = 'com.cjf.market.category.model.CategoryModel'/>
+		<typeAlias alias= 'GoodsModel' type = 'com.cjf.market.goods.model.GoodsModel'/>
+		<typeAlias alias= 'ImageModel' type = 'com.cjf.market.goods.model.ImageModel'/>
+		<typeAlias alias= 'OrderModel' type = 'com.cjf.market.order.model.OrderModel'/>
+		<typeAlias alias= 'OrderGoodsModel' type = 'com.cjf.market.order.model.OrderGoodsModel'/>
+		<typeAlias alias= 'ShopCartModel' type = 'com.cjf.market.shopcart.model.ShopCartModel'/>
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="com/cjf/market/user/mapper/UserMapper.xml" />
+		<mapper resource="com/cjf/market/category/mapper/CategoryMapper.xml" />
+		<mapper resource="com/cjf/market/goods/mapper/GoodsMapper.xml" />
+		<mapper resource="com/cjf/market/goods/mapper/ImageMapper.xml" />
+		<mapper resource="com/cjf/market/order/mapper/OrderMapper.xml" />
+		<mapper resource="com/cjf/market/order/mapper/OrderGoodsMapper.xml" />
+		<mapper resource="com/cjf/market/shopcart/mapper/ShopCartMapper.xml" />
+	</mappers>
+
+</configuration>

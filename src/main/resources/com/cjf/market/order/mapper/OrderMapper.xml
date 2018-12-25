@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace = "com.cjf.market.order.mapper.OrderMapper">
+  <resultMap id="ResultMap" type="OrderModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="account" property="account" />
+		<result column="time" property="time" />
+		<result column="address" property="address" />
+		<result column="cond" property="cond" />
+	</resultMap>
+	<sql id = "listcolumn">
+		id, code, account, time, address, cond
+		,(select us.username from b2c_market.user as us where us.account = o.account)username
+	</sql>
+	<sql id="whereclause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code like #{code}
+			</if>
+			<if test="account != null and account != ''">
+				and account = #{account}
+			</if>
+			<if test="time != null and time != ''">
+				and time = #{time}
+			</if>
+			<if test="address != null and address != ''">
+				and address = #{address}
+			</if>
+			<if test="cond != null and cond != ''">
+				and cond = #{cond}
+			</if>
+	</sql>
+	<insert id = 'insert' parameterType="Object">
+		insert into b2c_market.order(code, account, time, address, cond)
+		values(#{code}, #{account}, #{time}, #{address}, #{cond})
+	</insert>
+	<delete id="delete" parameterType="Object">
+		delete from b2c_market.order where code = #{code}
+	</delete>
+	<update id = 'update' parameterType="Object">
+		update b2c_market.order set
+		<trim suffixOverrides=",">
+			<if test="address != null and address != ''">
+				address = #{address},
+			</if>
+			<if test="account != null and account != ''">
+			 	account = #{account},
+			</if>
+			<if test = "time != null and time != ''">
+				time = #{time},
+			</if>
+			<if test="cond != null and cond != ''">
+				cond = #{cond},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	<select id="select" resultMap="ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/> 
+		from b2c_market.order as o<include refid="whereclause"/>
+		order by time desc limit ${rowStart}, ${pageLimit}
+	</select>
+	<select id="count" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) from b2c_market.order<include refid="whereclause"/>
+	</select>
+	<select id="selectall" resultMap = "ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/>
+		from b2c_market.order as o<include refid="whereclause"/>
+		order by code limit ${rowStart}, ${rowCount}
+	</select>
+	</mapper>

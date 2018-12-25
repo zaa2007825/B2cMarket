@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace = "com.cjf.market.user.mapper.UserMapper">
+  <resultMap id="ResultMap" type="UserModel">
+		<result column="id" property="id" />
+		<result column="account" property="account" />
+		<result column="password" property="password" />
+		<result column="username" property="username" />
+		<result column="admin" property="admin" />
+	</resultMap>
+	<sql id = "listcolumn">
+		id, account, password, username, admin
+	</sql>
+	<sql id="whereclause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="account != null and account != ''">
+				and account like #{account}
+			</if>
+			<if test="password != null and password != ''">
+				and password = #{password}
+			</if>
+			<if test="username != null and username != ''">
+				and username = #{username}
+			</if>
+			<if test="admin != null and admin != ''">
+				and admin = #{admin}
+			</if>
+	</sql>
+	<insert id = 'insert' parameterType="Object">
+		insert into b2c_market.user(account, password, username, admin)
+		values(#{account}, #{password}, #{username}, #{admin})
+	</insert>
+	<delete id="delete" parameterType="Object">
+		delete from b2c_market.user where account = #{account}
+	</delete>
+	<update id = 'update' parameterType="Object">
+		update b2c_market.user set
+		<trim suffixOverrides=",">
+			<if test="username != null and username != ''">
+				username = #{username},
+			</if>
+			<if test = "password != null and password != ''">
+				password = #{password},
+			</if>
+		</trim>
+		where account = #{account}
+	</update>
+	<select id="select" resultMap="ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/> 
+		from b2c_market.user <include refid="whereclause"/>
+	</select>
+	<select id="count" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) from b2c_market.user <include refid="whereclause"/>
+	</select>
+	<select id="selectall" resultMap = "ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/>
+		from b2c_market.user <include refid="whereclause"/>
+		order by account limit ${rowStart}, ${rowCount}
+	</select>
+	</mapper>

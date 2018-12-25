@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace = "com.cjf.market.order.mapper.OrderGoodsMapper">
+  <resultMap id="ResultMap" type="OrderGoodsModel">
+		<result column="id" property="id" />
+		<result column="ordercode" property="ordercode" />
+		<result column="goodscode" property="goodscode" />
+		<result column="ammount" property="ammount" />
+		<result column="price" property="price" />
+	</resultMap>
+	<sql id = "listcolumn">
+		id, ordercode, goodscode, ammount, price,
+		(select g.name from b2c_market.goods as g where g.code = og.goodscode)goodsname,
+		(select i.url from b2c_market.goodsimage as i where i.code = og.goodscode and i.type = "m")goodsimage
+	</sql>
+	<sql id="whereclause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="ordercode != null and ordercode != ''">
+				and ordercode = #{ordercode}
+			</if>
+			<if test="goodscode != null and goodscode != ''">
+				and goodscode = #{goodscode}
+			</if>
+			<if test="ammount != null and ammount != ''">
+				and ammount = #{ammount}
+			</if>
+			<if test="price != null and price != ''">
+				and price = #{price}
+			</if>
+	</sql>
+	<insert id = 'insert' parameterType="Object">
+		insert into b2c_market.ordergoods(ordercode, goodscode, ammount, price)
+		values(#{ordercode}, #{goodscode}, #{ammount}, #{price})
+	</insert>
+	<delete id="delete" parameterType="Object">
+		delete from b2c_market.ordergoods where id = #{id}
+	</delete>
+	<update id = 'update' parameterType="Object">
+		update b2c_market.ordergoods set
+		<trim suffixOverrides=",">
+			<if test="ordercode != null and ordercode != ''">
+				ordercode = #{ordercode},
+			</if>
+			<if test="ammount != null and ammount != ''">
+			 	ammount = #{ammount},
+			</if>
+			<if test="ammount != null and ammount != ''">
+			 	price = #{price},
+			</if>
+		</trim>
+		where goodscode = #{goodscode}
+	</update>
+	<select id="select" resultMap="ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/> 
+		from b2c_market.ordergoods as og<include refid="whereclause"/>
+	</select>
+	<select id="count" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) from b2c_market.ordergoods as og<include refid="whereclause"/>
+	</select>
+	<select id="selectall" resultMap = "ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/>
+		from b2c_market.ordergoods as og<include refid="whereclause"/>
+		order by code limit ${rowStart}, ${rowCount}
+	</select>
+	</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+   <mapper namespace = "com.cjf.market.goods.mapper.ImageMapper">
+  <resultMap id="ResultMap" type="ImageModel">
+		<result column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="url" property="url" />
+		<result column="type" property="type" />
+	</resultMap>
+	<sql id = "listcolumn">
+		id, code, url, type
+	</sql>
+	<sql id="whereclause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="code != null and code != ''">
+				and code = #{code}
+			</if>
+			<if test="url != null and url != ''">
+				and url = #{url}
+			</if>
+			<if test="type != null and type != ''">
+				and type = #{type}
+			</if>
+	</sql>
+	<insert id = 'insert' parameterType="Object">
+		insert into b2c_market.goodsimage(code, url, type)
+		values(#{code}, #{url}, #{type})
+	</insert>
+	<delete id="delete" parameterType="Object">
+		delete from b2c_market.goodsimage where url = #{url}
+	</delete>
+	<update id = 'update' parameterType="Object">
+		update b2c_market.goodsimage set
+		<trim suffixOverrides=",">
+			<if test="type != null and type != ''">
+			 	type = #{type},
+			</if>
+		</trim>
+		where url = #{url}
+	</update>
+	<update id = 'update1' parameterType="Object">
+		update b2c_market.goodsimage set
+		<trim suffixOverrides=",">
+			<if test="type != null and type != ''">
+			 	type = #{type},
+			</if>
+		</trim>
+		where code = #{code}
+	</update>
+	<select id="select" resultMap="ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/> 
+		from b2c_market.goodsimage <include refid="whereclause"/>
+	</select>
+	<select id="count" resultType="java.lang.Integer" parameterType="Object">
+		select count(1) from b2c_market.goodsimage <include refid="whereclause"/>
+	</select>
+	<select id="selectall" resultMap = "ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/>
+		from b2c_market.goodsimage <include refid="whereclause"/>
+		order by code limit ${rowStart}, ${rowCount}
+	</select>
+	</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace = "com.cjf.market.shopcart.mapper.ShopCartMapper">
+  <resultMap id="ResultMap" type="ShopCartModel">
+		<result column="id" property="id" />
+		<result column="account" property="account" />
+		<result column="code" property="code" />
+		<result column="ammount" property="ammount" />
+		<result column="url" property="url" />
+		<result column="name" property="name" />
+		<result column="price" property="price" />
+	</resultMap>
+	<sql id = "listcolumn">
+		s.id, s.account, s.code, s.ammount
+		,(select a.url from b2c_market.goodsimage as a where a.code = s.code and a.type = 'm')url
+		,(select c.name from b2c_market.goods as c where c.code = s.code)name
+		,(select d.price from b2c_market.goods as d where d.code = s.code)price
+	</sql>
+	<sql id="whereclause">
+		where 1=1
+			<if test="id != null">
+				and id = #{id}
+			</if>
+			<if test="account != null and account != ''">
+				and account = #{account}
+			</if>
+			<if test="code != null and code != ''">
+				and code = #{code}
+			</if>
+			<if test="ammount != null and ammount != ''">
+				and ammount = #{ammount}
+			</if>
+	</sql>
+	<insert id = 'insert' parameterType="Object">
+		insert into b2c_market.shopcart(account, code, ammount)
+		values(#{account}, #{code}, #{ammount})
+	</insert>
+	<delete id="delete" parameterType="Object">
+		delete from b2c_market.shopcart where id = #{id}
+	</delete>
+	<update id = 'update' parameterType="Object">
+		update b2c_market.shopcart set
+		<trim suffixOverrides=",">
+			<if test="ammount != null and ammount != ''">
+				ammount = #{ammount},
+			</if>
+		</trim>
+		where account = #{account} and code = #{code}
+	</update>
+	<select id="select" resultMap="ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/> 
+		from b2c_market.shopcart as s <include refid="whereclause"/>
+	</select>
+	<select id="selectall" resultMap = "ResultMap" parameterType="Object">
+		select <include refid="listcolumn"/>
+		from b2c_market.category as s <include refid="whereclause"/>
+		order by code limit ${rowStart}, ${rowCount}
+	</select>
+	</mapper>
